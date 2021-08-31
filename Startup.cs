@@ -22,6 +22,7 @@ namespace ShopAPI
         {
             services.AddControllers();
             services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("Database"));
+            services.AddScoped<DataContext, DataContext>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ShopAPI", Version = "v1" });
