@@ -5,12 +5,7 @@ namespace ShopAPI.Models
 
     public class Product
     {
-        public Product()
-        {
-            ProductId = Guid.NewGuid();
-        }
-
-        [Key] public Guid ProductId { get; set; }
+        [Key] public int Id { get; set; }
 
         [Required(ErrorMessage = "This field is required")]
         [MaxLength(60, ErrorMessage = "This field must have between 3 at 60 characters")]

@@ -1,16 +1,10 @@
 namespace ShopAPI.Models
 {
-    using System;
     using System.ComponentModel.DataAnnotations;
 
     public class Category
     {
-        public Category()
-        {
-            CategoryId = Guid.NewGuid();
-        }
-
-        [Key] public Guid CategoryId { get; set; }
+        [Key] public int Id { get; set; }
 
         [Required(ErrorMessage = "This field is required")]
         [MaxLength(60, ErrorMessage = "This field must have between 3 at 60 characters")]
