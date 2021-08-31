@@ -1,7 +1,7 @@
 namespace ShopAPI.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using ShopAPI.Models;
+    using Models;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -31,6 +31,7 @@ namespace ShopAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             return Ok(model);
         }
 
@@ -42,10 +43,12 @@ namespace ShopAPI.Controllers
             {
                 return NotFound(new { message = "Category not found" });
             }
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             return Ok();
         }
 
