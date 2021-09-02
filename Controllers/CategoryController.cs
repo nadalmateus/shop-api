@@ -1,8 +1,10 @@
 namespace ShopAPI.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
     using Models;
     using ShopAPI.Data;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -28,19 +30,25 @@ namespace ShopAPI.Controllers
         [Route("")]
         public async Task<ActionResult<Category>> Post([FromBody] Category model, [FromServices] DataContext context)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                context.Categories.Add(model);
+                await context.SaveChangesAsync();
+                return Ok(model);
             }
-
-            context.Categories.Add(model);
-            await context.SaveChangesAsync();
-            return Ok(model);
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível criar a categoria" });
+            }
         }
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category>> Put(int id, [FromBody] Category model)
+        public async Task<ActionResult<Category>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
         {
             if (id != model.Id)
             {
@@ -51,8 +59,20 @@ namespace ShopAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            return Ok();
+            try
+            {
+                context.Entry<Category>(model).State = EntityState.Modified;
+                await context.SaveChangesAsync();
+                return Ok(model);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return BadRequest(new { message = "Este registro já foi atualizado" });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível atualizar a categoria" });
+            }
         }
 
         [HttpDelete]
