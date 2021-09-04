@@ -48,7 +48,7 @@ namespace ShopAPI.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<Category>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
+        public async Task<ActionResult<List<Category>>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
         {
             if (id != model.Id)
             {
@@ -77,9 +77,23 @@ namespace ShopAPI.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult<Category>> Delete()
+        public async Task<ActionResult<Category>> Delete(int id, [FromServices] DataContext context)
         {
-            return Ok();
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            if (category == null)
+            {
+                return NotFound(new { message = "Categoria não encontrada" });
+            }
+            try
+            {
+                context.Categories.Remove(category);
+                await context.SaveChangesAsync();
+                return Ok(new { message = "Categoria removida com sucesso" });
+            }
+            catch (Exception)
+            {
+                return BadRequest(new { message = "Não foi possível remover a categoria" });
+            }
         }
     }
 }
