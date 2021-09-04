@@ -14,16 +14,20 @@ namespace ShopAPI.Controllers
     {
         [HttpGet]
         [Route("")]
-        public async Task<ActionResult<List<Category>>> Get()
+        public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
-            return new List<Category>();
+            var categories = await context.Categories.AsNoTracking().ToListAsync();
+            return Ok(categories);
         }
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<ActionResult<List<Category>>> GetById()
+        public async Task<ActionResult<List<Category>>> GetById(int id, [FromServices] DataContext context)
         {
-            return new List<Category>();
+            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+
+
+            return Ok(category);
         }
 
         [HttpPost]
