@@ -21,7 +21,8 @@ namespace ShopAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("Database"));
+            // services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("Database"));
+            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("connectionString")));
             services.AddScoped<DataContext, DataContext>();
             services.AddSwaggerGen(c =>
             {
