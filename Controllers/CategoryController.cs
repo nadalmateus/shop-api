@@ -1,9 +1,10 @@
 namespace ShopAPI.Controllers
 {
+    using Data;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.EntityFrameworkCore;
     using Models;
-    using ShopAPI.Data;
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -14,17 +15,19 @@ namespace ShopAPI.Controllers
     {
         [HttpGet]
         [Route("")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
-            var categories = await context.Categories.AsNoTracking().ToListAsync();
+            List<Category> categories = await context.Categories.AsNoTracking().ToListAsync();
             return Ok(categories);
         }
 
         [HttpGet]
         [Route("{id}")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> GetById(int id, [FromServices] DataContext context)
         {
-            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            Category category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
 
             return Ok(category);
@@ -32,6 +35,7 @@ namespace ShopAPI.Controllers
 
         [HttpPost]
         [Route("")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Category>> Post([FromBody] Category model, [FromServices] DataContext context)
         {
             try
@@ -40,6 +44,7 @@ namespace ShopAPI.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+
                 context.Categories.Add(model);
                 await context.SaveChangesAsync();
                 return Ok(model);
@@ -52,7 +57,9 @@ namespace ShopAPI.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<List<Category>>> Put(int id, [FromBody] Category model, [FromServices] DataContext context)
+        [Authorize(Roles = "employee")]
+        public async Task<ActionResult<List<Category>>> Put(int id, [FromBody] Category model,
+            [FromServices] DataContext context)
         {
             if (id != model.Id)
             {
@@ -63,9 +70,10 @@ namespace ShopAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             try
             {
-                context.Entry<Category>(model).State = EntityState.Modified;
+                context.Entry(model).State = EntityState.Modified;
                 await context.SaveChangesAsync();
                 return Ok(model);
             }
@@ -81,13 +89,15 @@ namespace ShopAPI.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult<Category>> Delete(int id, [FromServices] DataContext context)
         {
-            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            Category category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
             {
                 return NotFound(new { message = "Categoria não encontrada" });
             }
+
             try
             {
                 context.Categories.Remove(category);

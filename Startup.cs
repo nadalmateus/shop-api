@@ -25,7 +25,7 @@ namespace ShopAPI
         {
             services.AddControllers();
 
-            var key = Encoding.ASCII.GetBytes(Settings.Secret);
+            byte[] key = Encoding.ASCII.GetBytes(Settings.Secret);
 
             services.AddAuthentication(x =>
             {
@@ -33,7 +33,6 @@ namespace ShopAPI
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(x =>
             {
-
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
@@ -45,7 +44,8 @@ namespace ShopAPI
                 };
             });
             // services.AddDbContext<DataContext>(options => options.UseInMemoryDatabase("Database"));
-            services.AddDbContext<DataContext>(options => options.UseSqlServer(Configuration.GetConnectionString("connectionString")));
+            services.AddDbContext<DataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("connectionString")));
             services.AddScoped<DataContext, DataContext>();
             services.AddSwaggerGen(c =>
             {
