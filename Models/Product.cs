@@ -1,7 +1,7 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace ShopAPI.Models
 {
-    using System.ComponentModel.DataAnnotations;
-
     public class Product
     {
         [Key] public int Id { get; set; }

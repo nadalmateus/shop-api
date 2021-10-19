@@ -1,14 +1,14 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ShopAPI.Data;
+using ShopAPI.Models;
+
 namespace Controllers
 {
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using ShopAPI.Data;
-    using ShopAPI.Models;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     [ApiController]
     [Route("products")]
     public class ProductController : ControllerBase
@@ -18,7 +18,7 @@ namespace Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
         {
-            List<Product> products = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
+            var products = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
             return Ok(products);
         }
 
@@ -27,7 +27,7 @@ namespace Controllers
         [AllowAnonymous]
         public async Task<ActionResult<Product>> GetById(int id, [FromServices] DataContext context)
         {
-            Product products = await context.Products.Include(x => x.Category).AsNoTracking()
+            var products = await context.Products.Include(x => x.Category).AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
             return Ok(products);
         }
@@ -37,7 +37,7 @@ namespace Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Product>>> GetByCategory(int id, [FromServices] DataContext context)
         {
-            List<Product> products = await context.Products.Include(x => x.Category).AsNoTracking()
+            var products = await context.Products.Include(x => x.Category).AsNoTracking()
                 .Where(x => x.CategoryId == id).ToListAsync();
             return Ok(products);
         }

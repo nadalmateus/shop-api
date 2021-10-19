@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ShopAPI.Data;
+using ShopAPI.Models;
+
 namespace ShopAPI.Controllers
 {
-    using Data;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using Models;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
     [ApiController]
     [Route("Categories")]
     public class CategoryController : ControllerBase
@@ -18,7 +18,7 @@ namespace ShopAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
         {
-            List<Category> categories = await context.Categories.AsNoTracking().ToListAsync();
+            var categories = await context.Categories.AsNoTracking().ToListAsync();
             return Ok(categories);
         }
 
@@ -27,7 +27,7 @@ namespace ShopAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<List<Category>>> GetById(int id, [FromServices] DataContext context)
         {
-            Category category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            var category = await context.Categories.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
 
 
             return Ok(category);
@@ -92,7 +92,7 @@ namespace ShopAPI.Controllers
         [Authorize(Roles = "employee")]
         public async Task<ActionResult<Category>> Delete(int id, [FromServices] DataContext context)
         {
-            Category category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            var category = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (category == null)
             {
                 return NotFound(new { message = "Categoria não encontrada" });

@@ -1,16 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ShopAPI.Data;
+using ShopAPI.Models;
+using ShopAPI.Services;
+
 namespace ShopAPI.Controllers
 {
-    using Data;
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using Models;
-    using Services;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     [ApiController]
     [Route("users")]
     public class UserController : ControllerBase
@@ -20,7 +20,7 @@ namespace ShopAPI.Controllers
         [Authorize(Roles = "manager")]
         public async Task<ActionResult<List<User>>> Get([FromServices] DataContext context)
         {
-            List<User> users = await context.Users.AsNoTracking().ToListAsync();
+            var users = await context.Users.AsNoTracking().ToListAsync();
             return users;
         }
 
@@ -51,7 +51,7 @@ namespace ShopAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate([FromServices] DataContext context, [FromBody] User model)
         {
-            User user = await context.Users.AsNoTracking()
+            var user = await context.Users.AsNoTracking()
                 .Where(x => x.Username == model.Username && x.Password == model.Password).FirstOrDefaultAsync();
 
             if (user == null)
@@ -59,7 +59,7 @@ namespace ShopAPI.Controllers
                 return NotFound(new { message = "Usuario ou senha invalidos" });
             }
 
-            string token = TokenService.GenerateToken(user);
+            var token = TokenService.GenerateToken(user);
             return new { user, token };
         }
 
@@ -94,7 +94,7 @@ namespace ShopAPI.Controllers
         [Route("{id}")]
         public async Task<ActionResult<User>> Delete(int id, [FromServices] DataContext context)
         {
-            Category user = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
+            var user = await context.Categories.FirstOrDefaultAsync(x => x.Id == id);
             if (user == null)
             {
                 return NotFound(new { message = "Usuario não encontrada" });

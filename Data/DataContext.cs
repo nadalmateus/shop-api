@@ -1,8 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using ShopAPI.Models;
+
 namespace ShopAPI.Data
 {
-    using Microsoft.EntityFrameworkCore;
-    using Models;
-
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
